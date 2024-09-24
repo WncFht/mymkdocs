@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://WncFht.github.io/cs61b/note_en/09.%20Extends%2C%20Casting%2C%20Higher%20Order%20Functions/" rel="canonical"/>
+<link href="../08.%20Inheritance%2C%20Implements/" rel="prev"/>
+<link href="../10.%20Subtype%20Polymorphism%20vs.%20HoFs/" rel="next"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.34" name="generator"/>
+<title>Lecture - wnc 的咖啡馆</title>
+<link href="../../../assets/stylesheets/main.35f28582.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link href="../../../css/heti.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css" rel="stylesheet"/>
+<link href="../../../css/tasklist.css" rel="stylesheet"/>
+<link href="../../../css/custom.css" rel="stylesheet"/>
+<link href="../../../css/card.css" rel="stylesheet"/>
+<link href="../../../css/flink.css" rel="stylesheet"/>
+<link href="../../../css/changelog_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+<body data-md-color-accent="black" data-md-color-primary="black" data-md-color-scheme="slate" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#lecture">
+          跳转至
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+<nav aria-label="页眉" class="md-header__inner md-grid">
+<a aria-label="wnc 的咖啡馆" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="wnc 的咖啡馆">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            wnc 的咖啡馆
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Lecture
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="black" data-md-color-media="" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="white" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="搜索" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="搜索" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="查找" class="md-search__options">
+<a aria-label="分享" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="分享">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="清空当前内容" class="md-search__icon md-icon" tabindex="-1" title="清空当前内容" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/WncFht/WncFht.github.io" title="前往仓库">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    wnc's café
+  </div>
+</a>
+</div>
+</nav>
+<nav aria-label="标签" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../cs61a/COMPOSING%20PROGRAMS/">
+          
+  
+    
+  
+  cs61a
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../01.%20Intro%2C%20Hello%20World%20Java/">
+          
+  
+    
+  
+  cs61b
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../cs61c/cs61c/">
+          
+  
+    
+  
+  cs61c
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../slam/%E8%A7%86%E8%A7%89SLAM%E5%8D%81%E5%9B%9B%E8%AE%B2/">
+          
+  
+    
+  
+  SLAM
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../tygx_exp/eng_fht/">
+          
+  
+    
+  
+  天元公学生存指南
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Dive%20into%20deep%20learning/Dive%20into%20Deep%20Learning/">
+          
+  
+    
+  
+  动手学深度学习
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../summary/2024summer_vacation/">
+          
+  
+    
+  
+  总结
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="导航栏" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="wnc 的咖啡馆" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="wnc 的咖啡馆">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</a>
+    wnc 的咖啡馆
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/WncFht/WncFht.github.io" title="前往仓库">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    wnc's café
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    cs61a
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            cs61a
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61a/COMPOSING%20PROGRAMS/">
+<span class="md-ellipsis">
+    1. COMPOSING PROGRAMS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61a/cs61a/">
+<span class="md-ellipsis">
+    Cs61a
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+<span class="md-ellipsis">
+    cs61b
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            cs61b
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="">
+<span class="md-ellipsis">
+    note_en
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_1">
+<span class="md-nav__icon md-icon"></span>
+            note_en
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01.%20Intro%2C%20Hello%20World%20Java/">
+<span class="md-ellipsis">
+    01. Intro, Hello World Java
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02.%20Defining%20and%20Using%20Classes/">
+<span class="md-ellipsis">
+    02. Defining and Using Classes
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03.%20Testing/">
+<span class="md-ellipsis">
+    03. TestingTesting and Selection Sort
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04.%20References%2C%20Recursion%2C%20and%20Lists/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05.%20SLLists%2C%20Nested%20Classes%2C%20Sentinel%20Nodes/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06.%20DLLists%2C%20Arrays/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07.%20ALists%2C%20Resizing%2C%20vs.%20SLists/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../08.%20Inheritance%2C%20Implements/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../10.%20Subtype%20Polymorphism%20vs.%20HoFs/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../11.%20Exceptions%2C%20Iterators%2C%20Object%20Methods/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../12.%20Command%20Line%20Programming%2C%20Git%2C%20Project%202%20Preview/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../13.%20Asymptotics%20I/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../14.%20Disjoint%20Sets/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../15.%20Asymptotics%20II/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../16.%20ADTs%2C%20Sets%2C%20Maps%2C%20BSTs/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../17.%20B-Trees%20%282-3%2C%202-3-4%20Trees%29/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../18.%20Red%20Black%20Trees/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../19.%20Hashing/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../20.%20Heaps%20and%20PQs/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../21.%20Tree%20and%20Graph%20Traversals/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../22.%20Graph%20Traversals%20and%20Implementations/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../23.%20Shortest%20Paths/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../24.%20Minimum%20Spanning%20Trees/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../25.%20Range%20Searching%20and%20Multi-Dimensional%20Data/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../26.%20Prefix%20Operations%20and%20Tries/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../27.%20Software%20Engineering%20I/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    cs61c
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            cs61c
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c/">
+<span class="md-ellipsis">
+    Cs61c
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec06/">
+<span class="md-ellipsis">
+    Cs61c lec06
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec07/">
+<span class="md-ellipsis">
+    Cs61c lec07
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec08/">
+<span class="md-ellipsis">
+    Cs61c lec08
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec09/">
+<span class="md-ellipsis">
+    Cs61c lec09
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec10/">
+<span class="md-ellipsis">
+    Cs61c lec10
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec11/">
+<span class="md-ellipsis">
+    Cs61c lec11
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec12/">
+<span class="md-ellipsis">
+    Cs61c lec12
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec13/">
+<span class="md-ellipsis">
+    Cs61c lec13
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec14/">
+<span class="md-ellipsis">
+    Cs61c lec14
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec15/">
+<span class="md-ellipsis">
+    Cs61c lec15
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/%E8%B7%B3%E8%BD%AC%E5%92%8C%E8%BF%94%E5%9B%9E%E7%9A%84%E5%87%BD%E6%95%B0/">
+<span class="md-ellipsis">
+    跳转和返回的函数
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    SLAM
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            SLAM
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../slam/%E8%A7%86%E8%A7%89SLAM%E5%8D%81%E5%9B%9B%E8%AE%B2/">
+<span class="md-ellipsis">
+    视觉SLAM十四讲
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    天元公学生存指南
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            天元公学生存指南
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/eng_fht/">
+<span class="md-ellipsis">
+    英语经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/math_fht/">
+<span class="md-ellipsis">
+    数学经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/phy_fht/">
+<span class="md-ellipsis">
+    物理经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/tech_fht/">
+<span class="md-ellipsis">
+    技术经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/%E4%B8%80%E4%BA%9B%E8%B5%84%E6%BA%90/">
+<span class="md-ellipsis">
+    一些资源
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    动手学深度学习
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            动手学深度学习
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Dive%20into%20deep%20learning/Dive%20into%20Deep%20Learning/">
+<span class="md-ellipsis">
+    Dive into Deep Learning
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    总结
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            总结
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../summary/2024summer_vacation/">
+<span class="md-ellipsis">
+    2024年高三-大一暑假总结
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="目录" class="md-nav md-nav--secondary">
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<a class="md-content__button md-icon" href="https://github.com/WncFht/WncFht.github.io/raw/master/docs/cs61b/note_en/09. Extends, Casting, Higher Order Functions.md" title="查看本页的源代码">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+</a>
+<h1 id="lecture">Lecture<a class="headerlink" href="#lecture" title="Permanent link">¶</a></h1>
+<ul>
+<li>Subclasses cannot access private memebers of their superclass.</li>
+<li><a href="https://youtu.be/wrx_y3ib5iQ?list=PL8FaHk7qbOD6Mi8gDriGGeSnHi68QLuVD&amp;t=118">Interface doesn't extend <code>Object</code> class.</a></li>
+<li><a href="https://youtu.be/GioVGLuW69o?list=PL8FaHk7qbOD6Mi8gDriGGeSnHi68QLuVD&amp;t=76">Managing complexity</a></li>
+<li><a href="https://youtu.be/EfxYiAN6YME?list=PL8FaHk7qbOD6Mi8gDriGGeSnHi68QLuVD&amp;t=8">Implementation inheritance breaks Encapsulation</a></li>
+</ul>
+<h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h1>
+<p><strong>The Interface and implements</strong> Lets first note some differences between inheritence of a parent class and interfaces (Note that a class can do both, even at the same time! Here is the syntax for implemeting an interface:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Blorp</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">List61B</span><span class="o">&lt;</span><span class="n">Blorp</span><span class="o">&gt;</span>
+</code></pre></div>
+Similarly, the way for a class to extend the qualities of another class the syntax is as follows:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">Class_Name</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Class_Name</span>
+</code></pre></div>
+<p><strong>What is Inherited?</strong> We have a powerful tool in Inheritance now; however, we will define a few rules. For now, we will say that we can inherit:
+- instance and static variables
+- all methods
+- all nested classes </p>
+<p>This changes a little bit with the introduction of private variables but don’t worry about that right now. The one item that is not inherited is a class’s constructor.</p>
+<p><strong>The Special Case of the Constructor?</strong> Even though constructor’s are not inherited, we still use them. We can call the constructor explicitly by using the keyword super(). At the start of every constructor, there is already an implicit call to its super class<code>s constructor. As a result
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">public</span><span class="w"> </span><span class="nf">VengefulSLList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="n">deletedItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="p">();</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">}</span>
+</code></pre></div>
+is equivalent to
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">public</span><span class="w"> </span><span class="nf">VengefulSLList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="kd">super</span><span class="p">();</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span><span class="n">deletedItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="p">();</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="p">}</span>
+</code></pre></div>
+However, constructor</code>s with arguments are not implicitly called. This means that.
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kd">public</span><span class="w"> </span><span class="nf">VengefulSLList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="kd">super</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">    </span><span class="n">deletedItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="p">();</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span><span class="p">}</span>
+</code></pre></div>
+is not equivalent to
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="kd">public</span><span class="w"> </span><span class="nf">VengefulSLList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">    </span><span class="n">deletedItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="p">();</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="p">}</span>
+</code></pre></div>
+This is because only the empty argument super() is called.
+<p><strong>Is A.</strong> When a class inherits from another, we know that it must have all the qualities of it. This means that <code>VengefulSLList</code> is a <code>SLList</code> because it has all the qualities of an <code>SLList</code>- it just has a few additional ones too.</p>
+<p>Every single class is a descendent on the Object class, meaning they are all Objects.</p>
+<p><strong>Casting</strong> This statement would be valid
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="n">Dog</span><span class="w"> </span><span class="n">largerDog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maxDog</span><span class="p">(</span><span class="n">frank</span><span class="p">,</span><span class="w"> </span><span class="n">frankJr</span><span class="p">);</span>
+</code></pre></div>
+But this one would not be
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="n">Poodle</span><span class="w"> </span><span class="n">largerPoodle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maxDog</span><span class="p">(</span><span class="n">frank</span><span class="p">,</span><span class="w"> </span><span class="n">frankJr</span><span class="p">);</span>
+</code></pre></div>
+Instead of being happy with just having a generic <code>Dog</code>, we can be a bit risky and use a technique called casting. Casting allows us to force the static type of a variable, <em>basically tricking the compiler into letting us force the static type of an expression.</em> To make <code>largerPoodle</code> into a static type Poodle we will use the following:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="n">Poodle</span><span class="w"> </span><span class="n">largerPoodle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Poodle</span><span class="p">)</span><span class="w"> </span><span class="n">maxDog</span><span class="p">(</span><span class="n">frank</span><span class="p">,</span><span class="w"> </span><span class="n">frankJr</span><span class="p">);</span>
+</code></pre></div>
+<p><strong>Casting</strong>, while powerful is also quite dangerous. You need to ensure that what you are casting to can and will actually happen. There are a few rules that can be used:</p>
+<ul>
+<li>
+<p>You can always cast up (to a more generic version of a class) without fear of ruining anything because we know the more specific version is a version of the generic class. For example you can always cast a Poodle to a Dog because all Poodles are Dog’s.</p>
+</li>
+<li>
+<p>You can also cast down (to a more specific version of a class) with caution as you need to make sure that, during runtime, nothing is passed in that violates your cast. For example, sometimes Dog’s are Poodle’s but not always.</p>
+</li>
+<li>
+<p>Finally, you cannot ever cast to a class that is <strong>neither above or below</strong> the class being cast. For an example, you cannot cast a <code>Dog</code> to a <code>Monkey</code> because a <code>Monkey</code> is not in the direct lineage of a <code>Dog</code> -- it is a child of <code>Animal</code> so a bit more distant. You can think of this as “side casting” and it will result in a compile time error since the compiler knows this cast cannot possibly work.</p>
+</li>
+</ul>
+<p><strong>Inheritance Cheatsheet</strong>
+<code>VengefulSLList</code> extends <code>SLList</code> means <code>VengefulSLList</code> "is-an" <code>SLList</code>, and inherits all of <code>SLList</code>'s members:
+- Variables, methods nested classes
+- <strong>Not constructors</strong> Subclass constructors must invoke superclass constructor first. 
+- The super keyword can be used to invoke overridden superclass methods and constructors.
+Invocation of overridden methods follows two simple rules:
+- Compiler plays it safe and only allows us to do things according to the static type.
+- For overridden methods (not overloaded methods), the actual method invoked is based on the dynamic type of the invoking expression
+- Can use casting to overrule compiler type checking.</p>
+<h1 id="exercise">Exercise<a class="headerlink" href="#exercise" title="Permanent link">¶</a></h1>
+<h2 id="1">1<a class="headerlink" href="#1" title="Permanent link">¶</a></h2>
+<h3 id="q">Q<a class="headerlink" href="#q" title="Permanent link">¶</a></h3>
+<p>Say there is a class Poodle that inherits from Dog. The Dog class looks like this
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Dog</span><span class="p">{</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">     </span><span class="kt">int</span><span class="w"> </span><span class="n">weight</span><span class="p">;</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">     </span><span class="kd">public</span><span class="w"> </span><span class="nf">Dog</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">weight_in_pounds</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">       </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weight_in_pounds</span><span class="p">;</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">     </span><span class="p">}</span>
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="w">   </span><span class="p">}</span>
+</code></pre></div>
+And the Poodle class looks like this.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Poodle</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Dog</span><span class="p">{</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">   </span><span class="kd">public</span><span class="w"> </span><span class="nf">Poodle</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+Is this valid? If so explain why Poodle is a Dog if Dog has no constructor with no argument. If it is not valid then explain how we can make it valid.
+<h3 id="a">A<a class="headerlink" href="#a" title="Permanent link">¶</a></h3>
+<p>This is not valid. Because there is no default constructor for the Dog class. And it won't compile. But you can do this:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="w"> </span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Poodle</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Dog</span><span class="p">{</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">   </span><span class="kd">public</span><span class="w"> </span><span class="nf">Poodle</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">weight_in_pounds</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="kd">super</span><span class="p">(</span><span class="n">weight_in_pounds</span><span class="p">);}</span>
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<h2 id="2">2<a class="headerlink" href="#2" title="Permanent link">¶</a></h2>
+<h3 id="q_1">Q<a class="headerlink" href="#q_1" title="Permanent link">¶</a></h3>
+<p>The <code>Monkey</code> class is a subclass of the <code>Animal</code> class and the <code>Dog</code> class is a subclass of the <code>Animal</code> class. However a Dog is not a Monkey nor is a Monkey a Dog. What will happen for the following code? Assume that the constructors are all formatted properly.
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="w"> </span><span class="n">Monkey</span><span class="w"> </span><span class="n">jimmy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Monkey</span><span class="p">(</span><span class="s">"Jimmy"</span><span class="p">);</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w"> </span><span class="n">Dog</span><span class="w"> </span><span class="n">limmy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Dog</span><span class="p">)</span><span class="w"> </span><span class="n">jimmy</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="a_1">A<a class="headerlink" href="#a_1" title="Permanent link">¶</a></h3>
+<p>The compiler is smart enough to detect you did a impossible casting. And it's stupid enough to not let you compile even the <code>Monkey</code> and <code>Dog</code> have identical codes.</p>
+<h2 id="3">3<a class="headerlink" href="#3" title="Permanent link">¶</a></h2>
+<h3 id="q_2">Q<a class="headerlink" href="#q_2" title="Permanent link">¶</a></h3>
+<p>How about for this code?
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="w"> </span><span class="n">Monkey</span><span class="w"> </span><span class="n">orangutan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Monkey</span><span class="p">(</span><span class="s">"fruitful"</span><span class="p">);</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w"> </span><span class="n">Dog</span><span class="w"> </span><span class="n">mangotan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Dog</span><span class="p">)(</span><span class="n">Animal</span><span class="p">)</span><span class="w"> </span><span class="n">orangutan</span><span class="p">;</span>
+</code></pre></div>
+Provide brief explanation as to why you believe your answers to be correct.
+<h3 id="a_2">A<a class="headerlink" href="#a_2" title="Permanent link">¶</a></h3>
+<p>You are smart enought to trick the IntelliJ, but once you compile it will throw you an Exception.</p>
+<h1 id="extends-casting-higher-order-functions">Extends, Casting, Higher Order Functions<a class="headerlink" href="#extends-casting-higher-order-functions" title="Permanent link">¶</a></h1>
+<h2 id="extends">Extends<a class="headerlink" href="#extends" title="Permanent link">¶</a></h2>
+<p>We can set up this inheritance relationship in the class header, using the extends keyword like so:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RotatingSLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span>
+</code></pre></div>
+Note that constructors are not inherited, and private members cannot be directly accessed by subclasses.
+<h2 id="reuse-code-with-super">Reuse code with <code>super</code><a class="headerlink" href="#reuse-code-with-super" title="Permanent link">¶</a></h2>
+<p></p><div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">VengefulSLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="w">    </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="w"> </span><span class="n">deletedItems</span><span class="p">;</span>
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">printLostItems</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="w">        </span><span class="n">deletedItems</span><span class="p">.</span><span class="na">print</span><span class="p">();</span>
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="p">}</span>
+</code></pre></div>
+VengefulSLList's <code>removeLast</code> should do exactly the same thing that <code>SLList</code>'s does, except with one additional operation - adding the removed item to the <code>deletedItems</code> list. In an effort to reuse code, we can override the <code>removeLast</code> method to modify it to fit our needs, and call the removeLast method defined in the parent class, SLList, using the super keyword.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="w">    </span><span class="nd">@Override</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Item</span><span class="w"> </span><span class="nf">removeLast</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">        </span><span class="n">Item</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">removeLast</span><span class="p">();</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">        </span><span class="n">deletedItems</span><span class="p">.</span><span class="na">addLast</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+<h2 id="constructors-are-not-inherited">Constructors Are Not Inherited<a class="headerlink" href="#constructors-are-not-inherited" title="Permanent link">¶</a></h2>
+<p>While constructors are not inherited, Java requires that <strong>all constructors must start with a call to one of its superclass's constructors.</strong></p>
+<p>To gain some intuition on why that it is, recall that the extends keywords defines an "is-a" relationship between a subclass and a parent class. If a VengefulSLList "is-an" SLList, then it follows that every VengefulSLList must be set up like an SLList.</p>
+<p>Here's a more in-depth explanation. Let's say we have two classes:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Human</span><span class="w"> </span><span class="p">{...}</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TA</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Human</span><span class="w"> </span><span class="p">{...}</span>
+</code></pre></div>
+It is logical for TA to extend Human, because all TA's are Human. Thus, we want TA's to inherit the attributes and behaviors of Humans.
+<p>If we run the code below:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="n">TA</span><span class="w"> </span><span class="n">Christine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TA</span><span class="p">();</span>
+</code></pre></div>
+Then first, a Human must be created. Then, that Human can be given the qualities of a TA. It doesn't make sense for a TA to be constructed without first creating a Human first.
+<p>Thus, we can either explicitly make a call to the superclass's constructor, using the super keyword:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="kd">public</span><span class="w"> </span><span class="nf">VengefulSLList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a><span class="w">    </span><span class="kd">super</span><span class="p">();</span>
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a><span class="w">    </span><span class="n">deletedItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SLList</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span><span class="p">();</span>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="p">}</span>
+</code></pre></div>
+Or, if we choose not to, Java will automatically make a call to the s<strong>uperclass's no-argument constructor</strong> for us.
+<p>In this case, adding super() has no difference from the constructor we wrote before. It just makes explicit what was done implicitly by Java before.</p>
+<h2 id="the-object-class">The Object Class<a class="headerlink" href="#the-object-class" title="Permanent link">¶</a></h2>
+<p>Every class in Java is a descendant of the Object class, or <code>extends</code> the Object class. Even classes that do not have an explicit <code>extends</code> in their class still <em>implicitly</em> extend the Object class.</p>
+<p>For example,
+- VengefulSLList extends SLList explicitly in its class declaration
+- SLList extends Object implicitly</p>
+<p>This means that since SLList inherits all members of Object, VengefulSLList inherits all members of SLList and Object, transitively. So, what is to be inherited from Object?</p>
+<p>As seen in <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">the documentation for the Object class</a>, the Object class provides operations that every Object should be able to do - like <code>.equals(Object obj)</code>, <code>.hashCode()</code>, and <code>toString()</code>.</p>
+<h2 id="encapsulation">Encapsulation<a class="headerlink" href="#encapsulation" title="Permanent link">¶</a></h2>
+<p>Encapsulation is one of the fundamental principles of object oriented programming, and is one of the approaches that we take as programmers to resist our biggest enemy: <em>complexity</em>. Managing complexity is one of the major challenges we must face when writing large programs.</p>
+<p>Some of the tools we can use to fight complexity include hierarchical abstraction (abstraction barriers!) and a concept known as "Design for change". This revolves around the idea that programs should be built into modular, interchangeable pieces that can be swapped around without breaking the system. Additionally, <strong>hiding information</strong> that others don't need is another fundamental approach when managing a large system.</p>
+<p>In computer science terms, a module can be defined as a set of methods that work together as a whole to perform a task or set of related tasks. This could be something like a class that represents a list. Now, if the implementation details of a module are kept internally hidden and the only way to interact with it is through a documented interface, then that module is said to be encapsulated.</p>
+<h2 id="casting">Casting<a class="headerlink" href="#casting" title="Permanent link">¶</a></h2>
+<p></p><div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="n">Poodle</span><span class="w"> </span><span class="n">largerPoodle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Poodle</span><span class="p">)</span><span class="w"> </span><span class="n">maxDog</span><span class="p">(</span><span class="n">frank</span><span class="p">,</span><span class="w"> </span><span class="n">frankSr</span><span class="p">);</span><span class="w"> </span><span class="c1">// runtime exception!</span>
+</code></pre></div>
+Casting allows this code to pass, and when <code>maxDog</code> returns the <code>Malamute</code> at runtime, and we try casting a <code>Malamute</code> as a <code>Poodle</code>, we run into a runtime exception - a <code>ClassCastException</code>.
+<h2 id="higher-order-functions">Higher Order Functions<a class="headerlink" href="#higher-order-functions" title="Permanent link">¶</a></h2>
+<p>In old school Java (Java 7 and earlier), memory boxes (variables) could not contain pointers to functions. What that means is that we could not write a function that has a "Function" type, as there was simply no type for functions.</p>
+<p>To get around this we can take advantage of interface inheritance. Let's write an interface that defines any function that takes in an integer and returns an integer - an <code>IntUnaryFunction</code>.
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">IntUnaryFunction</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="p">}</span>
+</code></pre></div>
+Now we can write a class which <code>implements IntUnaryFunction</code> to represent a concrete function. Let's make a function that takes in an integer and returns 10 times that integer.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TenX</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">IntUnaryFunction</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w">    </span><span class="cm">/* Returns ten times the argument. */</span>
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="p">}</span>
+</code></pre></div>
+At this point, we've written in Java the Python equivalent of the tenX function. Let's write <code>do_twice</code> now.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">do_twice</span><span class="p">(</span><span class="n">IntUnaryFunction</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">f</span><span class="p">.</span><span class="na">apply</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="na">apply</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="p">}</span>
+</code></pre></div>
+A call to <code>print(do_twice(tenX, 2))</code> in Java would look like this:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">do_twice</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">TenX</span><span class="p">(),</span><span class="w"> </span><span class="mi">2</span><span class="p">));</span>
+</code></pre></div>
+<h1 id="qa">Q&amp;A<a class="headerlink" href="#qa" title="Permanent link">¶</a></h1>
+<ul>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=178">Why you use <code>i += 1</code></a></li>
+<li>Because I want to discourage ppl use <code>x[i++]</code>.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=331">Call two functions in a line</a></li>
+<li><code>f(3), g(3);</code></li>
+<li>You do this not <code>f(3) &amp;&amp; g(3)</code> because maybe the return type of <code>f</code> is <code>void</code>.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=465">What is a has-a relationship</a></li>
+<li>A FebruarySet has-a SLList to store its data.</li>
+<li>If you implemente this by Extends inheritance, you are using it in a not recommended way.</li>
+<li>Because has-a relationship can be easily done by make it a class meber.</li>
+<li>"has-a" means composition.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=921">It is possible that API is not sufficient to do the job</a></li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=945">What's the different between <code>extends</code> and <code>implements</code></a></li>
+<li>If the thing afterward is a class, you use <code>extends</code>, otherwise (interface) <code>implements</code>.</li>
+<li><code>implements</code> takes a thing that is abstract to concret.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=1030">The advantages of signaitures in interface</a></li>
+<li>You let the compiler know whether a variable has the thing you need.</li>
+<li>Concisely and formally specify the behavior of the class.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=1320">Runtime type checker</a></li>
+<li>You have two identical classes: FridayCat and ThursdayCat.</li>
+<li>They are the same only differ in name.</li>
+<li><code>FridayCat c = (FridayCat) new ThursdayCat();</code> will still crash.</li>
+<li><code>int c = (int) new Double(3.3);</code> is allowed because of special rules for primitives.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=1784">The keyword for <code>package private</code> is no keyword</a></li>
+<li>If you forget put <code>public</code>/<code>private</code>, you are actually doing this.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=1831">abstract in java</a></li>
+<li>It's a keyword in between an interface and a class.</li>
+<li><code>abstract</code> class can have instance variables.</li>
+<li>I once had <code>abstract</code> in the class, but they introduced the <code>default</code>. I didn't need it anymore.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=1875">A case for <code>abstract</code></a></li>
+<li>Say you want to write your own <code>List</code> class.</li>
+<li>You use <code>MyClass implements java.util.List</code>.</li>
+<li>You need provide all of methods <code>java.util.List</code> provides. It will take a long time.</li>
+<li>So you can use the Abstract List,</li>
+<li>You only need to implement <code>get</code> method and have all the features (of Abstract List).</li>
+<li>Maybe it's legacy reason they don't have default methods for <code>java.util.List</code>.</li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=2782">You cannot instantiate interface</a></li>
+<li><a href="https://youtu.be/GzrokKOAxjw?t=3123">Josh won't tell you how to do dynamic type tricks (get the dynamic type of the instance which calls the method)</a></li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  回到页面顶部
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<div class="md-progress" data-md-component="progress" role="progressbar"></div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.action.view", "navigation.tracking", "navigation.tabs", "navigation.indexes", "navigation.top", "navigation.instant", "navigation.instant.progress", "content.code.copy", "navigation.sections", "toc.follow", "search.highlight", "search.share", "search.suggest", "navigation.tabs.sticky"], "search": "../../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+<script src="../../../assets/javascripts/bundle.56dfad97.min.js"></script>
+<script src="../../../js/katex.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js"></script>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>

@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://WncFht.github.io/cs61b/note_en/23.%20Shortest%20Paths/" rel="canonical"/>
+<link href="../22.%20Graph%20Traversals%20and%20Implementations/" rel="prev"/>
+<link href="../24.%20Minimum%20Spanning%20Trees/" rel="next"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.5.34" name="generator"/>
+<title>Lecture - wnc 的咖啡馆</title>
+<link href="../../../assets/stylesheets/main.35f28582.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link href="../../../css/heti.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css" rel="stylesheet"/>
+<link href="../../../css/tasklist.css" rel="stylesheet"/>
+<link href="../../../css/custom.css" rel="stylesheet"/>
+<link href="../../../css/card.css" rel="stylesheet"/>
+<link href="../../../css/flink.css" rel="stylesheet"/>
+<link href="../../../css/changelog_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../assets/javascripts/glightbox.min.js"></script></head>
+<body data-md-color-accent="black" data-md-color-primary="black" data-md-color-scheme="slate" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#lecture">
+          跳转至
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+<nav aria-label="页眉" class="md-header__inner md-grid">
+<a aria-label="wnc 的咖啡馆" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="wnc 的咖啡馆">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            wnc 的咖啡馆
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Lecture
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="black" data-md-color-media="" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="white" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="搜索" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="搜索" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="查找" class="md-search__options">
+<a aria-label="分享" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="分享">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="清空当前内容" class="md-search__icon md-icon" tabindex="-1" title="清空当前内容" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/WncFht/WncFht.github.io" title="前往仓库">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    wnc's café
+  </div>
+</a>
+</div>
+</nav>
+<nav aria-label="标签" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../cs61a/COMPOSING%20PROGRAMS/">
+          
+  
+    
+  
+  cs61a
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../01.%20Intro%2C%20Hello%20World%20Java/">
+          
+  
+    
+  
+  cs61b
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../cs61c/cs61c/">
+          
+  
+    
+  
+  cs61c
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../slam/%E8%A7%86%E8%A7%89SLAM%E5%8D%81%E5%9B%9B%E8%AE%B2/">
+          
+  
+    
+  
+  SLAM
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../tygx_exp/eng_fht/">
+          
+  
+    
+  
+  天元公学生存指南
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Dive%20into%20deep%20learning/Dive%20into%20Deep%20Learning/">
+          
+  
+    
+  
+  动手学深度学习
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../summary/2024summer_vacation/">
+          
+  
+    
+  
+  总结
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="导航栏" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="wnc 的咖啡馆" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="wnc 的咖啡馆">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</a>
+    wnc 的咖啡馆
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/WncFht/WncFht.github.io" title="前往仓库">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    wnc's café
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    cs61a
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            cs61a
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61a/COMPOSING%20PROGRAMS/">
+<span class="md-ellipsis">
+    1. COMPOSING PROGRAMS
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61a/cs61a/">
+<span class="md-ellipsis">
+    Cs61a
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+<span class="md-ellipsis">
+    cs61b
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            cs61b
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="">
+<span class="md-ellipsis">
+    note_en
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_1">
+<span class="md-nav__icon md-icon"></span>
+            note_en
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../01.%20Intro%2C%20Hello%20World%20Java/">
+<span class="md-ellipsis">
+    01. Intro, Hello World Java
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../02.%20Defining%20and%20Using%20Classes/">
+<span class="md-ellipsis">
+    02. Defining and Using Classes
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../03.%20Testing/">
+<span class="md-ellipsis">
+    03. TestingTesting and Selection Sort
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../04.%20References%2C%20Recursion%2C%20and%20Lists/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../05.%20SLLists%2C%20Nested%20Classes%2C%20Sentinel%20Nodes/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../06.%20DLLists%2C%20Arrays/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../07.%20ALists%2C%20Resizing%2C%20vs.%20SLists/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../08.%20Inheritance%2C%20Implements/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../09.%20Extends%2C%20Casting%2C%20Higher%20Order%20Functions/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../10.%20Subtype%20Polymorphism%20vs.%20HoFs/">
+<span class="md-ellipsis">
+    Overview
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../11.%20Exceptions%2C%20Iterators%2C%20Object%20Methods/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../12.%20Command%20Line%20Programming%2C%20Git%2C%20Project%202%20Preview/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../13.%20Asymptotics%20I/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../14.%20Disjoint%20Sets/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../15.%20Asymptotics%20II/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../16.%20ADTs%2C%20Sets%2C%20Maps%2C%20BSTs/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../17.%20B-Trees%20%282-3%2C%202-3-4%20Trees%29/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../18.%20Red%20Black%20Trees/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../19.%20Hashing/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../20.%20Heaps%20and%20PQs/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../21.%20Tree%20and%20Graph%20Traversals/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../22.%20Graph%20Traversals%20and%20Implementations/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../24.%20Minimum%20Spanning%20Trees/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../25.%20Range%20Searching%20and%20Multi-Dimensional%20Data/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../26.%20Prefix%20Operations%20and%20Tries/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../27.%20Software%20Engineering%20I/">
+<span class="md-ellipsis">
+    Lecture
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    cs61c
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            cs61c
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c/">
+<span class="md-ellipsis">
+    Cs61c
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec06/">
+<span class="md-ellipsis">
+    Cs61c lec06
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec07/">
+<span class="md-ellipsis">
+    Cs61c lec07
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec08/">
+<span class="md-ellipsis">
+    Cs61c lec08
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec09/">
+<span class="md-ellipsis">
+    Cs61c lec09
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec10/">
+<span class="md-ellipsis">
+    Cs61c lec10
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec11/">
+<span class="md-ellipsis">
+    Cs61c lec11
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec12/">
+<span class="md-ellipsis">
+    Cs61c lec12
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec13/">
+<span class="md-ellipsis">
+    Cs61c lec13
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec14/">
+<span class="md-ellipsis">
+    Cs61c lec14
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/cs61c_lec15/">
+<span class="md-ellipsis">
+    Cs61c lec15
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cs61c/%E8%B7%B3%E8%BD%AC%E5%92%8C%E8%BF%94%E5%9B%9E%E7%9A%84%E5%87%BD%E6%95%B0/">
+<span class="md-ellipsis">
+    跳转和返回的函数
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    SLAM
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            SLAM
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../slam/%E8%A7%86%E8%A7%89SLAM%E5%8D%81%E5%9B%9B%E8%AE%B2/">
+<span class="md-ellipsis">
+    视觉SLAM十四讲
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    天元公学生存指南
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            天元公学生存指南
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/eng_fht/">
+<span class="md-ellipsis">
+    英语经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/math_fht/">
+<span class="md-ellipsis">
+    数学经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/phy_fht/">
+<span class="md-ellipsis">
+    物理经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/tech_fht/">
+<span class="md-ellipsis">
+    技术经验分享
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tygx_exp/%E4%B8%80%E4%BA%9B%E8%B5%84%E6%BA%90/">
+<span class="md-ellipsis">
+    一些资源
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    动手学深度学习
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            动手学深度学习
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Dive%20into%20deep%20learning/Dive%20into%20Deep%20Learning/">
+<span class="md-ellipsis">
+    Dive into Deep Learning
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    总结
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            总结
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../summary/2024summer_vacation/">
+<span class="md-ellipsis">
+    2024年高三-大一暑假总结
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="目录" class="md-nav md-nav--secondary">
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<a class="md-content__button md-icon" href="https://github.com/WncFht/WncFht.github.io/raw/master/docs/cs61b/note_en/23. Shortest Paths.md" title="查看本页的源代码">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+</a>
+<h1 id="lecture">Lecture<a class="headerlink" href="#lecture" title="Permanent link">¶</a></h1>
+<ul>
+<li><a href="https://youtu.be/iMoFtG1md3w?t=854">The shortest path solution to all targets is always a tree</a></li>
+<li>It's also the case for undirected graph.</li>
+<li>The number of edges of shortest path tree is always <span class="arithmatex">\(V-1\)</span>.</li>
+<li><a href="https://youtu.be/iMoFtG1md3w?t=976">Directed graph is more general than undirected and easy to think about</a></li>
+<li>You can add the all paths with the s and t reversed with the same weight to achieve the undirected graph.</li>
+<li><a href="https://youtu.be/iMoFtG1md3w?t=2098">When a relaxation operation is performed on a visited node, it will always fail</a></li>
+<li><a href="https://youtu.be/iMoFtG1md3w?t=2250">How to deal with negative weight?</a></li>
+<li>If there's no cycle, you just do a BFT, relaxing as you go.</li>
+<li>If there are cycles, you can use bellman-ford.<ul>
+<li>For every vertex, relax V times.</li>
+</ul>
+</li>
+<li>Example: currency trading.</li>
+<li>Dijkstra's can fail because relaxation of already visited verices can succeed.</li>
+<li><a href="https://youtu.be/iMoFtG1md3w?t=2781">A*</a></li>
+<li>Add <code>h(v, goal)</code> (heuristic expectation) to the fringe.</li>
+<li>Instead of exploring exhaustively, we're using a best guess to guide our search.</li>
+<li><a href="https://qiao.github.io/PathFinding.js/visual/">https://qiao.github.io/PathFinding.js/visual/</a></li>
+<li>For A<em> to give the correct answer, our A</em> heuristic must be:<ul>
+<li>Admissible: h(v, NYC) <span class="arithmatex">\(\leq\)</span> true distance from v to NYC</li>
+<li>Consistent: For each neighbor of w:</li>
+<li>h(v, NYC) <span class="arithmatex">\(\leq\)</span> dist(v, w) + h(w, NYC)</li>
+<li>Where dist(v, w) is the weight of the edge from v to w.</li>
+</ul>
+</li>
+<li><a href="https://youtu.be/iMoFtG1md3w?t=3251">Consistency and Admissibility</a></li>
+<li>All consistent heuristics are admissible.</li>
+</ul>
+<h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h1>
+<p><strong>Dijktra’s Algorithm and Single-Source Shortest Paths.</strong> Suppose we want to record the shortest paths from some source to every single other vertex (so that we can rapidly found a route from s to X, from s to Y, and so forth). We already know how to do this if we’re only counting the number of edges, we just use BFS.</p>
+<p>But if edges have weights (representing, for example road lengths), we have to do something else. It turns out that even considering edge weights, we can preprocess the shortest route from the source to every vertex very efficiently. We store the answer as a “shortest paths tree”. Typically, a shortest paths tree is stored as an array of edgeTo[] values (and optionally distTo[] values if we want a constant time distTo() operation).</p>
+<p>To find the SPT, we can use Dijkstra’s algorithm, which is quite simple once you understand it. Essentially, we visit each vertex in order of its distance from the source, where each visit consists of relaxing every edge. Informally, relaxing an edge means using it if its better than the best known distance to the target vertex, otherwise ignoring it. Or in pseudocode:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>Dijkstra(G, s):
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>    while not every vertex has been visited:
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>        visit(unmarked vertex v for which distTo(v) is minimized)
+</code></pre></div>
+Where visit is given by the following pseudocode:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>visit(v):
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>    mark(v)
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>    for each edge e of s:
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>        relax(e)
+</code></pre></div>
+And finally, relax is given by:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>relax(e):
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>    v = e.source
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>    w = e.target        
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>    currentBestKnownWeight = distTo(w)
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>    possiblyBetterWeight = distTo(v) + e.weight
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    if possiblyBetterWeight &lt; currentBestKnownWeight
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>        Use e instead of whatever we were using before
+</code></pre></div>
+Runtime is <span class="arithmatex">\(O(V×logV+V×logV+E×logV)\)</span>, and since <span class="arithmatex">\(E&gt;V\)</span> for any graph we’d run Dijkstra’s algorithm on, this can be written as more simply <span class="arithmatex">\(O(E log V)\)</span>. See slides for runtime description.
+<p><strong>A* Single-Target Shortest Paths.</strong> If we need only the path to a single target, then Dijkstra’s is inefficient as it explores many many edges that we don’t care about (e.g. when routing from Denver to NYC, we’d explore everything within more than a thousand miles in all directions before reaching NYC).</p>
+<p>To fix this, we make a very minor change to Dijkstra’s, where instead of visiting vertices in order of distance from the source, we visit them in order of distance from the source + h(v), where h(v) is some heuristic.</p>
+<p>Or in pseudocode:
+</p><div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>A*(G, s):
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>    while not every vertex has been visited:
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>        visit(unmarked vertex v for which distTo(v) + h(v) is minimized)
+</code></pre></div>
+It turns out (but we did not prove), that as long as h(v) is less than the true distance from s to v, then the result of A* will always be correct.
+<p>Note: In the version in class, we did not use an explicit ‘mark’. Instead, we tossed everything in the PQ, and we effectively considered a vertex marked if it had been removed from the PQ.</p>
+<h1 id="shortest-paths">Shortest Paths<a class="headerlink" href="#shortest-paths" title="Permanent link">¶</a></h1>
+<h2 id="recalls">Recalls<a class="headerlink" href="#recalls" title="Permanent link">¶</a></h2>
+<p>BFS and DFS both can:
+- find a path from a given vertex, <span class="arithmatex">\(s\)</span>, to every reachable vertex in the graph.</p>
+<p>BFS can but DFS cannot:
+- find a <strong>shortest path</strong> from a given vertex, <span class="arithmatex">\(s\)</span> to every reachable vertex in the graph.</p>
+<p>Efficiency:
+- DFS is worse for spindly graphs. Imagine a graph with 10000 nodes all spindly. We'll end up making 10000 recursive calls, which is bad for space.
+- BFS is worse for "bushy" graphs, because our queue gets used a lot.</p>
+<p>But the shortest path found by BFS is weightless, <strong>where shortest means the fewest number of edges</strong>. </p>
+<h2 id="dijkstras-algorithm">Dijkstra's Algorithm<a class="headerlink" href="#dijkstras-algorithm" title="Permanent link">¶</a></h2>
+<h3 id="observations">Observations<a class="headerlink" href="#observations" title="Permanent link">¶</a></h3>
+<ol>
+<li>What we care to minimize is the sum of the weights of the edges on the selected path.</li>
+<li>Shortest paths tree can be created in the following way:
+   - For every vertex <span class="arithmatex">\(v\)</span> (which is not <span class="arithmatex">\(s\)</span>) in the graph, find the shortest path from <span class="arithmatex">\(s\)</span> to <span class="arithmatex">\(v\)</span>.
+   - "Combine"/"Union" all the edges that you found above.</li>
+<li>The "Shortest Path Tree" will always be a tree.
+   - Think about our original solution where there is an <code>edgeTo</code> array.
+   - For every node, there was exactly one "parent".
+   - A tree has <span class="arithmatex">\(V-1\)</span> edges, where <span class="arithmatex">\(V\)</span> is the number of nodes in the tree.</li>
+</ol>
+<h3 id="dijkstras-algorithm_1">Dijkstra's Algorithm<a class="headerlink" href="#dijkstras-algorithm_1" title="Permanent link">¶</a></h3>
+<p>Dijkstra's algorithm takes in an input vertex <span class="arithmatex">\(s\)</span>, and outputs the shortest path tree from <span class="arithmatex">\(s\)</span>. How does it work?</p>
+<ol>
+<li>Create a priority queue.</li>
+<li>Add s to the priority queue with priority <span class="arithmatex">\(0\)</span>. Add all other vertices to the priority queue with priority <span class="arithmatex">\(\infty\)</span>.</li>
+<li>While the priority queue is not empty: pop a vertex out of the priority queue, and <strong>relax</strong> all of the edges going out from the vertex.</li>
+</ol>
+<h4 id="what-does-it-mean-to-relax"><strong>What does it mean to relax?</strong><a class="headerlink" href="#what-does-it-mean-to-relax" title="Permanent link">¶</a></h4>
+<ul>
+<li>Look at your current best distance to <span class="arithmatex">\(w\)</span> from the source, call it <span class="arithmatex">\(\texttt{curBestDistToW}\)</span>.</li>
+<li>Look at your <span class="arithmatex">\(\texttt{curBestDistTo}\textbf{V}\)</span> + <span class="arithmatex">\(\texttt{weight}(v, w)\)</span>. (let's call it \texttt{potentialDistToWUsingV})</li>
+<li>Is <span class="arithmatex">\(\texttt{potentialDistToWUsingV}\)</span> smaller than <span class="arithmatex">\(\texttt{curBestDistToW}\)</span>? </li>
+<li>In that case, set <span class="arithmatex">\(\texttt{curBestDistToW} = \texttt{potentialDistToWUsingV}\)</span>, and update the <span class="arithmatex">\(\texttt{edgeTo}[w]\)</span> to be <span class="arithmatex">\(v\)</span>.</li>
+<li><strong>Important note: we never relax edges that point to already visited vertices.</strong></li>
+</ul>
+<h4 id="pseudocode"><strong>Pseudocode</strong><a class="headerlink" href="#pseudocode" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>def dijkstras(source):
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    PQ.add(source, 0)
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>    For all other vertices, v, PQ.add(v, infinity)
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    while PQ is not empty:
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>        p = PQ.removeSmallest()
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        relax(all edges from p)
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>def relax(edge p,q):
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>   if q is visited (i.e., q is not in PQ):
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>       return
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>   if distTo[p] + weight(edge) &lt; distTo[q]:
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>       distTo[q] = distTo[p] + w
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>       edgeTo[q] = p
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>       PQ.changePriority(q, distTo[q])
+</code></pre></div>
+<h4 id="guarantees"><strong>Guarantees</strong><a class="headerlink" href="#guarantees" title="Permanent link">¶</a></h4>
+<p>As long as the edges are all non-negative, Dijkstra's is guaranteed to be optimal.</p>
+<h4 id="proofs-and-intuitions"><strong>Proofs and Intuitions</strong><a class="headerlink" href="#proofs-and-intuitions" title="Permanent link">¶</a></h4>
+<p>Assume all edges are non-negative.</p>
+<ul>
+<li>At start, distTo[source] = 0. This is optimal.</li>
+<li>After relaxing all edges from source, let vertex <span class="arithmatex">\(v_1\)</span> be the vertex with the minimum weight. **Claim: distTo[<span class="arithmatex">\(v_1\)</span>] is optimal, i.e., whatever the value of distTo[<span class="arithmatex">\(v_1\)</span>​] is at this point is the shortest distance from <span class="arithmatex">\(s\)</span> to <span class="arithmatex">\(v_1\)</span>. Why?</li>
+<li>Suppose that it isn't the case. Then that means that there is some other path from <span class="arithmatex">\(s\)</span> to <span class="arithmatex">\(v_1\)</span>​ which is shorter than the direct path <span class="arithmatex">\((s, v_1)\)</span>. </li>
+<li>Ok, so let's consider this hypothetical cool shorter path... it would have to look like (<span class="arithmatex">\(s, v_a, v_b, \ldots, v_1\)</span>). </li>
+<li>But (<span class="arithmatex">\(s, v_a\)</span>) is already bigger than (<span class="arithmatex">\(s, v_1\)</span>)(Note that this is true because <span class="arithmatex">\(v_1\)</span> is the vertex that is closest to ss from above.) </li>
+<li>So how can such a path exist which is actually shorter?</li>
+<li>Make this same argument for <span class="arithmatex">\(v_1\)</span> and all the relaxation it does.</li>
+</ul>
+<h4 id="a-noteworthy-invariant"><strong>A noteworthy invariant</strong><a class="headerlink" href="#a-noteworthy-invariant" title="Permanent link">¶</a></h4>
+<p>Once a vertex is popped from the priority queue, we <strong>know</strong> the true shortest distance to that vertex from the source.</p>
+<p>One nice consequence of this fact is "short-circuiting". So sometimes <code>dijkstra</code> takes in not only a source, but also a target. When the target is poped, the function returned.</p>
+<h2 id="a">A*<a class="headerlink" href="#a" title="Permanent link">¶</a></h2>
+<p><code>Dijkstra</code> only relys on the pure fact of the graph, but sometimes, we have a guess/experience that some vertices are prefered even they are at the low priority.</p>
+<p>So, let's modify our Dijkstra's algorithm slightly. In Dijkstra's, we used <span class="arithmatex">\(\texttt{bestKnownDistToV}\)</span> as the priority in our algorithm. This time, we'll use <span class="arithmatex">\(\texttt{bestKnownDistToV} + \texttt{estimateFromVToGoal}\)</span> as our heuristic.</p>
+<h3 id="chicken-and-egg">Chicken And Egg<a class="headerlink" href="#chicken-and-egg" title="Permanent link">¶</a></h3>
+<p>We have a problem. How do we know what the estimate is? I mean, the estimate itself is a distance, and we're using A<em> to </em><em>find</em>* the distance from some node to some other node.</p>
+<p>Well, it's called an estimate because it's exactly that. We use A* to get the true shortest path from a source to a target, but the estimate is something we approximate. Coming up with good estimates is hard sometimes.</p>
+<h3 id="good-estimates-heuristics">Good estimates (heuristics)<a class="headerlink" href="#good-estimates-heuristics" title="Permanent link">¶</a></h3>
+<ul>
+<li>Admissibility. heuristic(v, target) <span class="arithmatex">\(\leq\)</span> trueDistance(v, target). (Think about the problem above. The true distance from the neighbor of <span class="arithmatex">\(C\)</span> to <span class="arithmatex">\(C\)</span> wasn't infinity, it was much, much smaller. But our heuristic said it was <span class="arithmatex">\(\infty\)</span>, so we broke this rule.)</li>
+<li>Consistency. For each neighbor <span class="arithmatex">\(v\)</span> of <span class="arithmatex">\(w\)</span>:</li>
+<li>heuristic(v, target) <span class="arithmatex">\(\leq\)</span> dist(v, w) + heuristic(w, target)</li>
+<li>where dist(v, w) is the weight of the edge from v to w.</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  回到页面顶部
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<div class="md-progress" data-md-component="progress" role="progressbar"></div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate", "content.action.view", "navigation.tracking", "navigation.tabs", "navigation.indexes", "navigation.top", "navigation.instant", "navigation.instant.progress", "content.code.copy", "navigation.sections", "toc.follow", "search.highlight", "search.share", "search.suggest", "navigation.tabs.sticky"], "search": "../../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+<script src="../../../assets/javascripts/bundle.56dfad97.min.js"></script>
+<script src="../../../js/katex.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js"></script>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
